@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { UserContext } from "../contexts/UserContext";
-import ContentEditable from "react-contenteditable";
 
 function Invoice() {
   const [userAddress] = useState(function () {
@@ -12,14 +11,8 @@ function Invoice() {
 
   // list of services
   const [services, setServices] = useState([
-    {
-      service: "Design Landing Page",
-      price: "1500",
-    },
-    {
-      service: "Development with workflow",
-      price: "1500",
-    },
+    { service: "Design Landing Page", price: "1500" },
+    { service: "Development with workflow", price: "1500" },
     { service: "Develop Product Mobile App", price: "1200" },
   ]);
 
@@ -58,7 +51,7 @@ function Invoice() {
             <span>
               {userProfile.length > 0
                 ? userProfile.profile.stxAddress.mainnet.slice(0, 25) +
-                  "..........."
+                  ".....background-color: #d6d3d3;......"
                 : userAddress.profile.stxAddress.mainnet.slice(0, 25) +
                   "..........."}
             </span>
