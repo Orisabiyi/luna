@@ -43,11 +43,11 @@ function Invoice() {
         </div>
 
         <div className="py-[2rem] border-b-[1px] border-t-[1px] border-white w-full text-[1.8rem]">
-          <p>
+          <p className="flex items-center">
             <span>To: </span>
             <span
               contentEditable="true"
-              className="cursor-pointer editable-span"
+              className="cursor-pointer editable-span flex-1"
             >
               El-Mubaraq Ajibola
             </span>

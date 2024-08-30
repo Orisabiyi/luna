@@ -8,12 +8,12 @@ html {
 
 .editable-span {
   cursor: pointer;
-  border: 1px dashed transparent;
-  padding: 0.2rem;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.3rem 1rem 0.3rem 1rem;
 }
 
 .editable-span:focus {
-  border-color: #ccc;
   outline: none;
-  background-color: #f0f0f0;
+  border-color: #b8b8b8;
 }
