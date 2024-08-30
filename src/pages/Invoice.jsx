@@ -32,11 +32,14 @@ function Invoice() {
   );
 
   return (
-    <section className="min-h-screen bg-black flex flex-col items-center justify-center">
+    <section className="min-h-screen bg-black flex flex-col items-center justify-center gap-[3rem] py-[2rem]">
+      <h1 className="text-[3rem] text-white font-bold">Luna</h1>
       <figure className="bg-white px-[4rem] pt-[3rem] pb-[6rem] w-[60%] lg:w-[50%] xl:w-[40%] h-auto rounded-[1.5rem] flex flex-col gap-[2rem]">
         <div className="text-[2rem]">
-          <h1>{`Invoice LN-${new Date().toISOString().slice(-4)}`}</h1>
-          <h3>{`Issued Date: ${issuedDate}`}</h3>
+          <h2 className="text-[2.75rem] font-semibold">{`INVOICE LN-${new Date()
+            .toISOString()
+            .slice(-4)}`}</h2>
+          <h3 className="font-medium tracking-[.1rem]">{`Issued Date: ${issuedDate}`}</h3>
         </div>
 
         <div className="py-[2rem] border-b-[1px] border-t-[1px] border-white w-full text-[1.8rem]">
