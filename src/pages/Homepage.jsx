@@ -9,6 +9,8 @@ function Homepage() {
   const appConfig = new AppConfig(["store_write", "publish_data"]);
   const userSession = new UserSession({ appConfig });
 
+  console.log(userSession);
+
   function connectWallet() {
     showConnect({
       appDetails: {
@@ -18,7 +20,6 @@ function Homepage() {
 
       onFinish: function () {
         const userData = userSession.loadUserData();
-        console.log(userData);
         setUserProfile(userData);
 
         navigate("/invoice");
