@@ -5,3 +5,15 @@
 html {
   font-size: 62.5%;
 }
+
+.editable-span {
+  cursor: pointer;
+  border: 1px dashed transparent;
+  padding: 0.2rem;
+}
+
+.editable-span:focus {
+  border-color: #ccc;
+  outline: none;
+  background-color: #f0f0f0;
+}
