@@ -1,32 +1,34 @@
-import { useEffect } from "react";
 import { useState } from "react";
+import ContentEditable from "react-contenteditable";
 import { UserContext } from "../contexts/UserContext";
 
 function Invoice() {
-  const [userAddress] = useState(function () {
-    return JSON.parse(sessionStorage.getItem("address"));
-  });
-  const [issuedDate, setIssuedDate] = useState("");
+  const [userAddress] = useState(() =>
+    JSON.parse(sessionStorage.getItem("address"))
+  );
   const { userProfile } = UserContext();
 
-  // list of services
   const [services, setServices] = useState([
     { service: "Design Landing Page", price: "1500" },
     { service: "Development with workflow", price: "1500" },
     { service: "Develop Product Mobile App", price: "1200" },
   ]);
 
-  const [recipient, setRecipient] = useState("");
-
-  useEffect(
-    function () {
-      setIssuedDate(new Date().toLocaleDateString());
-      console.log(services);
-    },
-    [services]
+  const [recipient, setRecipient] = useState(
+    "SP31DA6FTSJX2WGTZ69SFY11BH51NZMB0ZW97B5P0"
   );
 
-  const handleRecipient = function (e) {};
+  // Handle recipient input
+  const handleRecipientChange = (e) => {
+    setRecipient(e.target.value);
+  };
+
+  // Handle service input
+  const handleServiceInput = (index, field, value) => {
+    const newServices = [...services];
+    newServices[index][field] = value;
+    setServices(newServices);
+  };
 
   return (
     <section className="min-h-screen bg-black flex flex-col items-center justify-center gap-[3rem] py-[2rem]">
@@ -36,43 +38,57 @@ function Invoice() {
           <h2 className="text-[2.75rem] font-semibold">{`INVOICE LN-${new Date()
             .toISOString()
             .slice(-4)}`}</h2>
-          <h3 className="font-medium tracking-[.1rem]">{`Issued Date: ${issuedDate}`}</h3>
+          <h3 className="font-medium tracking-[.1rem]">{`Issued Date: ${new Date().toLocaleDateString()}`}</h3>
         </div>
 
-        <div className="py-[2rem] border-b-[1px] border-t-[1px] border-white w-full text-[1.8rem]">
-          <p className="flex items-center">
+        <div className="py-[2rem] border-b-[1px] border-t-[1px] border-white w-full text-[1.6rem]">
+          <p className="flex items-center gap-[1rem]">
             <span>To: </span>
-            <span
-              contentEditable="true"
-              className="cursor-pointer editable-span flex-1"
-            >
-              El-Mubaraq Ajibola
-            </span>
+            <ContentEditable
+              html={recipient}
+              onChange={handleRecipientChange}
+              className="cursor-pointer flex-1 editable-span"
+              tagName="span"
+            />
           </p>
 
-          <p>
+          <p className="flex item-center gap-[.5rem]">
             <span>From: </span>
             <span>
               {userProfile.length > 0
-                ? userProfile.profile.stxAddress.mainnet.slice(0, 25) +
-                  ".....background-color: #d6d3d3;......"
-                : userAddress.profile.stxAddress.mainnet.slice(0, 25) +
-                  "..........."}
+                ? userProfile.profile.stxAddress.mainnet.slice(0, 25) + "....."
+                : userAddress.profile.stxAddress.mainnet.slice(0, 25) + "....."}
             </span>
           </p>
         </div>
 
         <ul className="flex flex-col gap-[2rem] text-[1.8rem]">
-          {services &&
-            services.map(({ service, price }, i) => (
-              <li
-                className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]"
-                key={i}
-              >
-                <span>{service}</span>
-                <span>$ {price} </span>
-              </li>
-            ))}
+          {services.map(({ service, price }, i) => (
+            <li
+              className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]"
+              key={i}
+            >
+              <ContentEditable
+                html={service}
+                onChange={(e) =>
+                  handleServiceInput(i, "service", e.target.value)
+                }
+                className="cursor-pointer"
+                tagName="div"
+              />
+              <div>
+                $
+                <ContentEditable
+                  html={price}
+                  onChange={(e) =>
+                    handleServiceInput(i, "price", e.target.value)
+                  }
+                  className="cursor-pointer text-right"
+                  tagName="span"
+                />
+              </div>
+            </li>
+          ))}
         </ul>
 
         <div className="text-[1.8rem] flex flex-col gap-[2rem] justify-center translate-y-[1rem]">
