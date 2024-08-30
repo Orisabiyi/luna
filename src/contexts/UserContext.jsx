@@ -4,7 +4,7 @@ import { createContext } from "react";
 
 const createUserContext = createContext();
 
-export function UserContextProvider() {
+export function UserContextProvider({ children }) {
   const [userProfile, setUserProfile] = useState({});
 
   return (
@@ -13,7 +13,9 @@ export function UserContextProvider() {
         userProfile,
         setUserProfile,
       }}
-    ></createUserContext.Provider>
+    >
+      {children}
+    </createUserContext.Provider>
   );
 }
 
