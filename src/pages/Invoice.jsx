@@ -3,20 +3,13 @@ import { useState } from "react";
 import { UserContext } from "../contexts/UserContext";
 
 function Invoice() {
-  const [userAddress, setUserAddress] = useState(function () {
-    return sessionStorage.getItem("address");
-  });
+  const [userAddress, setUserAddress] = useState();
   const [issuedDate, setIssuedDate] = useState("");
   const { userProfile } = UserContext();
 
   useEffect(
     function () {
       setIssuedDate(new Date().toLocaleDateString());
-      sessionStorage.setItem(
-        "address",
-        JSON.stringify(userProfile.profile.stxAddress.mainnet)
-      );
-      setUserAddress(userProfile.profile.stxAddress.mainnet);
     },
     [userProfile]
   );
@@ -36,7 +29,7 @@ function Invoice() {
 
           <p>
             <span>From:</span>
-            <span>{userProfile.profile.stxAddress.mainnet}</span>
+            <span>{userAddress}</span>
           </p>
         </div>
       </figure>
