@@ -21,6 +21,7 @@ function Homepage() {
       onFinish: function () {
         const userData = userSession.loadUserData();
         setUserProfile(userData);
+        sessionStorage.setItem("address", JSON.stringify(userData));
 
         navigate("/invoice");
       },
