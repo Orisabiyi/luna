@@ -16,6 +16,8 @@ function Invoice() {
     { service: "Develop Product Mobile App", price: "1200" },
   ]);
 
+  const [recipient, setRecipient] = useState("");
+
   useEffect(
     function () {
       setIssuedDate(new Date().toLocaleDateString());
@@ -23,6 +25,8 @@ function Invoice() {
     },
     [services]
   );
+
+  const handleRecipient = function (e) {};
 
   return (
     <section className="min-h-screen bg-black flex flex-col items-center justify-center gap-[3rem] py-[2rem]">
