@@ -2,15 +2,18 @@ import { Route, Routes } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import Invoice from "./pages/Invoice";
+import { UserContextProvider } from "./contexts/UserContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/inovice" element={<Invoice />} />
-      </Routes>
-    </BrowserRouter>
+    <UserContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/inovice" element={<Invoice />} />
+        </Routes>
+      </BrowserRouter>
+    </UserContextProvider>
   );
 }
 
