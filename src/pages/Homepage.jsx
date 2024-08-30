@@ -1,4 +1,9 @@
+import { AppConfig, UserSession } from "@stacks/auth";
+
 function Homepage() {
+  const appConfig = new AppConfig();
+  const userSession = new UserSession();
+
   return (
     <header className="bg-black min-h-screen flex flex-col items-center justify-center">
       <h1 className="text-white text-[10rem]">Luna</h1>
