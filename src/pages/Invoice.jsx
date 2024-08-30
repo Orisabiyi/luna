@@ -12,14 +12,24 @@ function Invoice() {
 
   // list of services
   const [services, setServices] = useState([
-    "Design Landing Page",
-    "Development with workflow",
-    "Develop Product Mobile App",
+    {
+      service: "Design Landing Page",
+      price: "1500",
+    },
+    {
+      service: "Development with workflow",
+      price: "1500",
+    },
+    { service: "Develop Product Mobile App", price: "1200" },
   ]);
 
-  useEffect(function () {
-    setIssuedDate(new Date().toLocaleDateString());
-  }, []);
+  useEffect(
+    function () {
+      setIssuedDate(new Date().toLocaleDateString());
+      console.log(services);
+    },
+    [services]
+  );
 
   return (
     <section className="min-h-screen bg-black flex flex-col items-center justify-center">
@@ -48,20 +58,16 @@ function Invoice() {
         </div>
 
         <ul className="flex flex-col gap-[2rem] text-[1.8rem]">
-          <li className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]">
-            <span>Design Landing Page</span>
-            <span>$ 1,500.00 </span>
-          </li>
-
-          <li className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]">
-            <span>Design Landing Page</span>
-            <span>$ 1,500.00 </span>
-          </li>
-
-          <li className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]">
-            <span>Design Landing Page</span>
-            <span>$ 1,500.00 </span>
-          </li>
+          {services &&
+            services.map(({ service, price }, i) => (
+              <li
+                className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]"
+                key={i}
+              >
+                <span>{service}</span>
+                <span>$ {price} </span>
+              </li>
+            ))}
         </ul>
 
         <div className="text-[1.8rem] flex flex-col gap-[2rem] justify-center translate-y-[1rem]">
