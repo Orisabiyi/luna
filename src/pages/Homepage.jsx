@@ -1,7 +1,11 @@
 import { AppConfig, UserSession } from "@stacks/auth";
 import { showConnect } from "@stacks/connect";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Homepage() {
+  const navigate = useNavigate("");
+  const [userProfile, setUserProfile] = useState({});
   const appConfig = new AppConfig(["store_write", "publish_data"]);
   const userSession = new UserSession({ appConfig });
 
@@ -12,11 +16,12 @@ function Homepage() {
         icon: "Luna",
       },
 
-      redirectTo: "/invoice",
-
       onFinish: function () {
         const userData = userSession.loadUserData();
         console.log(userData);
+        setUserProfile(userData);
+
+        navigate("/invoice");
       },
 
       userSession,
