@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { UserContext } from "../contexts/UserContext";
 import ContentEditable from "react-contenteditable";
-import { FaPencilAlt } from "react-icons/fa";
 
 function Invoice() {
   const [userAddress] = useState(function () {
@@ -11,20 +10,12 @@ function Invoice() {
   const [issuedDate, setIssuedDate] = useState("");
   const { userProfile } = UserContext();
 
-  const [text, setText] = useState("Click the pencil to edit me");
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleChange = (e) => {
-    setText(e.target.value);
-  };
-
-  const handleBlur = () => {
-    setIsEditing(false);
-  };
+  // list of services
+  const [services, setServices] = useState([
+    "Design Landing Page",
+    "Development with workflow",
+    "Develop Product Mobile App",
+  ]);
 
   useEffect(function () {
     setIssuedDate(new Date().toLocaleDateString());
@@ -32,13 +23,13 @@ function Invoice() {
 
   return (
     <section className="min-h-screen bg-black flex flex-col items-center justify-center">
-      <figure className="bg-gray-200 px-[3rem] py-[1.5rem] w-[50%] rounded-[1.5rem] flex flex-col gap-[1rem]">
+      <figure className="bg-white px-[4rem] pt-[3rem] pb-[6rem] w-[60%] lg:w-[50%] xl:w-[40%] h-auto rounded-[1.5rem] flex flex-col gap-[2rem]">
         <div className="text-[2rem]">
           <h1>{`Invoice LN-${new Date().toISOString().slice(-4)}`}</h1>
           <h3>{`Issued Date: ${issuedDate}`}</h3>
         </div>
 
-        <div className="text-[1.8rem]">
+        <div className="py-[2rem] border-b-[1px] border-t-[1px] border-white w-full text-[1.8rem]">
           <p>
             <span>To: </span>
             <span>El-Mubaraq Ajibola</span>
@@ -48,29 +39,41 @@ function Invoice() {
             <span>From: </span>
             <span>
               {userProfile.length > 0
-                ? userProfile.profile.stxAddress.mainnet
-                : userAddress.profile.stxAddress.mainnet}
+                ? userProfile.profile.stxAddress.mainnet.slice(0, 25) +
+                  "..........."
+                : userAddress.profile.stxAddress.mainnet.slice(0, 25) +
+                  "..........."}
             </span>
           </p>
         </div>
 
-        <ul>
-          <li>
-            <ContentEditable
-              html={text}
-              disabled={!isEditing}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              tagName="span"
-            />
-            <FaPencilAlt
-              onClick={handleEditClick}
-              style={{ cursor: "pointer", marginLeft: "10px" }}
-            />
+        <ul className="flex flex-col gap-[2rem] text-[1.8rem]">
+          <li className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]">
+            <span>Design Landing Page</span>
+            <span>$ 1,500.00 </span>
           </li>
-          <li></li>
-          <li></li>
+
+          <li className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]">
+            <span>Design Landing Page</span>
+            <span>$ 1,500.00 </span>
+          </li>
+
+          <li className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]">
+            <span>Design Landing Page</span>
+            <span>$ 1,500.00 </span>
+          </li>
         </ul>
+
+        <div className="text-[1.8rem] flex flex-col gap-[2rem] justify-center translate-y-[1rem]">
+          <p className="flex items-center justify-between">
+            <span>Total Amount:</span>
+            <span>$3, 250.00</span>
+          </p>
+
+          <button className="bg-gray-500 rounded-[1rem] text-white font-bold text-center py-[1rem]">
+            Generate Invoice
+          </button>
+        </div>
       </figure>
     </section>
   );
