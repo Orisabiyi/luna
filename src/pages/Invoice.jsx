@@ -1,30 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ContentEditable from "react-contenteditable";
 import { UserContext } from "../contexts/UserContext";
 
 function Invoice() {
-  const [userAddress] = useState(() =>
-    JSON.parse(sessionStorage.getItem("address"))
-  );
+  const [invoiceOwner] = useState(function () {
+    return JSON.parse(sessionStorage.getItem("address"));
+  });
+  const [services, setServices] = useState(function () {
+    return JSON.parse(sessionStorage.getItem("services"));
+  });
+
   const { userProfile } = UserContext();
+  const [recipient, setRecipient] = useState("Enter recipient address here");
 
-  const [services, setServices] = useState([
-    { service: "Design Landing Page", price: "1500" },
-    { service: "Development with workflow", price: "1500" },
-    { service: "Develop Product Mobile App", price: "1200" },
-  ]);
-
-  const [recipient, setRecipient] = useState(
-    "SP31DA6FTSJX2WGTZ69SFY11BH51NZMB0ZW97B5P0"
+  useEffect(
+    function () {
+      sessionStorage.setItem(
+        "services",
+        JSON.stringify([
+          { service: "Design Landing Page", price: "1500" },
+          { service: "Development with workflow", price: "1500" },
+          { service: "Develop Product Mobile App", price: "1200" },
+        ])
+      );
+    },
+    [services]
   );
 
   // Handle recipient input
-  const handleRecipientChange = (e) => {
+  const handleRecipientChange = function (e) {
     setRecipient(e.target.value);
   };
 
   // Handle service input
-  const handleServiceInput = (index, field, value) => {
+  const handleServiceInput = function (index, field, value) {
     const newServices = [...services];
     newServices[index][field] = value;
     setServices(newServices);
@@ -57,7 +66,8 @@ function Invoice() {
             <span>
               {userProfile.length > 0
                 ? userProfile.profile.stxAddress.mainnet.slice(0, 25) + "....."
-                : userAddress.profile.stxAddress.mainnet.slice(0, 25) + "....."}
+                : invoiceOwner.profile.stxAddress.mainnet.slice(0, 25) +
+                  "....."}
             </span>
           </p>
         </div>
@@ -85,11 +95,21 @@ function Invoice() {
                   }
                   className="cursor-pointer text-right"
                   tagName="span"
+                  inputMode="numeric"
                 />
               </div>
             </li>
           ))}
         </ul>
+
+        <div className="flex justify-between items-center">
+          <label>Payment Type</label>
+          <select id="">
+            <option value="crowdfunding">CrowdFunding</option>
+            <option value="single payment">Single Payment</option>
+            <option value="group payment">Group Payment</option>
+          </select>
+        </div>
 
         <div className="text-[1.8rem] flex flex-col gap-[2rem] justify-center translate-y-[1rem]">
           <p className="flex items-center justify-between">
