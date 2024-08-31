@@ -103,9 +103,9 @@ function Invoice() {
           ))}
         </ul>
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center text-[1.8rem]">
           <label>Payment Type</label>
-          <select id="">
+          <select id="" className="outline-none">
             <option value="crowdfunding">CrowdFunding</option>
             <option value="single payment">Single Payment</option>
             <option value="group payment">Group Payment</option>
