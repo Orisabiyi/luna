@@ -6,23 +6,24 @@ function Invoice() {
   const [invoiceOwner] = useState(function () {
     return JSON.parse(sessionStorage.getItem("address"));
   });
-  const [services, setServices] = useState(function () {
-    return JSON.parse(sessionStorage.getItem("services"));
-  });
+  const [services, setServices] = useState(
+    sessionStorage.getItem("services")
+      ? function () {
+          return JSON.parse(sessionStorage.getItem("services"));
+        }
+      : [
+          { service: "Design Landing Page", price: "1500" },
+          { service: "Development with workflow", price: "1500" },
+          { service: "Develop Product Mobile App", price: "1200" },
+        ]
+  );
 
   const { userProfile } = UserContext();
   const [recipient, setRecipient] = useState("Enter recipient address here");
 
   useEffect(
     function () {
-      sessionStorage.setItem(
-        "services",
-        JSON.stringify([
-          { service: "Design Landing Page", price: "1500" },
-          { service: "Development with workflow", price: "1500" },
-          { service: "Develop Product Mobile App", price: "1200" },
-        ])
-      );
+      sessionStorage.setItem("services", JSON.stringify(services));
     },
     [services]
   );
