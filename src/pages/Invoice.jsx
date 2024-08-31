@@ -121,7 +121,7 @@ function Invoice() {
                     }}
                     className="ml-4 text-red-500"
                   >
-                    &#x2715; {/* "x" delete icon */}
+                    &#x2715;
                   </button>
                 </div>
               </li>
