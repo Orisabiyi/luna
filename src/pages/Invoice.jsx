@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import ContentEditable from "react-contenteditable";
 import { UserContext } from "../contexts/UserContext";
 
+const date = new Date();
+
 function Invoice() {
   const [invoiceOwner] = useState(function () {
     return JSON.parse(sessionStorage.getItem("address"));
@@ -18,8 +20,9 @@ function Invoice() {
         ]
   );
 
-  const { userProfile } = UserContext();
   const [recipient, setRecipient] = useState("Enter recipient address here");
+  const [payment, setPayment] = useState("");
+  const { userProfile } = UserContext();
 
   useEffect(
     function () {
@@ -58,10 +61,10 @@ function Invoice() {
       <h1 className="text-[3rem] text-white font-bold">Luna</h1>
       <figure className="bg-white px-[4rem] pt-[3rem] pb-[6rem] w-[60%] lg:w-[50%] xl:w-[40%] h-auto rounded-[1.5rem] flex flex-col gap-[2rem]">
         <div className="text-[2rem]">
-          <h2 className="text-[2.75rem] font-semibold">{`INVOICE LN-${new Date()
+          <h2 className="text-[2.75rem] font-semibold">{`INVOICE LN-${date
             .toISOString()
             .slice(-4)}`}</h2>
-          <h3 className="font-medium tracking-[.1rem]">{`Issued Date: ${new Date().toLocaleDateString()}`}</h3>
+          <h3 className="font-medium tracking-[.1rem]">{`Issued Date: ${date.toLocaleDateString()}`}</h3>
         </div>
 
         <div className="py-[2rem] border-b-[1px] border-t-[1px] border-white w-full text-[1.6rem]">
@@ -137,7 +140,11 @@ function Invoice() {
 
         <div className="flex justify-between items-center text-[1.8rem]">
           <label>Payment Type</label>
-          <select id="" className="outline-none">
+          <select
+            id=""
+            className="outline-none"
+            onChange={(e) => setPayment(e.target.value)}
+          >
             <option value="crowdfunding">CrowdFunding</option>
             <option value="single payment">Single Payment</option>
             <option value="group payment">Group Payment</option>
