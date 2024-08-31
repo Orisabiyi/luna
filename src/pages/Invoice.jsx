@@ -40,6 +40,19 @@ function Invoice() {
     setServices(newServices);
   };
 
+  // Add a new service
+  const handleAddService = function () {
+    setServices([...services, { service: "New Service", price: "0" }]);
+  };
+
+  // Delete a service
+  const handleDeleteService = function (index) {
+    const newServices = services.filter(function (_, i) {
+      return i !== index;
+    });
+    setServices(newServices);
+  };
+
   return (
     <section className="min-h-screen bg-black flex flex-col items-center justify-center gap-[3rem] py-[2rem]">
       <h1 className="text-[3rem] text-white font-bold">Luna</h1>
@@ -74,34 +87,53 @@ function Invoice() {
         </div>
 
         <ul className="flex flex-col gap-[2rem] text-[1.8rem]">
-          {services.map(({ service, price }, i) => (
-            <li
-              className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]"
-              key={i}
-            >
-              <ContentEditable
-                html={service}
-                onChange={(e) =>
-                  handleServiceInput(i, "service", e.target.value)
-                }
-                className="cursor-pointer"
-                tagName="div"
-              />
-              <div>
-                $
+          {services.map(function ({ service, price }, i) {
+            return (
+              <li
+                className="flex justify-between border-b-[1px] border-gray-300 pb-[1rem]"
+                key={i}
+              >
                 <ContentEditable
-                  html={price}
-                  onChange={(e) =>
-                    handleServiceInput(i, "price", e.target.value)
-                  }
-                  className="cursor-pointer text-right"
-                  tagName="span"
-                  inputMode="numeric"
+                  html={service}
+                  onChange={function (e) {
+                    handleServiceInput(i, "service", e.target.value);
+                  }}
+                  className="cursor-pointer"
+                  tagName="div"
                 />
-              </div>
-            </li>
-          ))}
+                <div className="flex items-center">
+                  $
+                  <ContentEditable
+                    html={price}
+                    onChange={function (e) {
+                      handleServiceInput(i, "price", e.target.value);
+                    }}
+                    className="cursor-pointer text-right"
+                    tagName="span"
+                    inputMode="numeric"
+                  />
+                  <button
+                    onClick={function () {
+                      handleDeleteService(i);
+                    }}
+                    className="ml-4 text-red-500"
+                  >
+                    &#x2715; {/* "x" delete icon */}
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
+
+        <div className="flex justify-center">
+          <button
+            onClick={handleAddService}
+            className="bg-gray-500 rounded-[1rem] text-white font-bold text-center py-[1rem] mb-[2rem]"
+          >
+            + Add New Service
+          </button>
+        </div>
 
         <div className="flex justify-between items-center text-[1.8rem]">
           <label>Payment Type</label>
