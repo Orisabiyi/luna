@@ -166,7 +166,7 @@ function Invoice() {
           </button>
         </div>
 
-        <div className="flex justify-between items-center text-[1.8rem]">
+        {/* <div className="flex justify-between items-center text-[1.8rem]">
           <label>Payment Type</label>
           <select
             id=""
@@ -177,7 +177,7 @@ function Invoice() {
             <option value="single payment">Single Payment</option>
             <option value="group payment">Group Payment</option>
           </select>
-        </div>
+        </div> */}
 
         <div className="text-[1.8rem] flex flex-col gap-[2rem] justify-center translate-y-[1rem]">
           <p className="flex items-center justify-between">
