@@ -160,7 +160,7 @@ function Invoice() {
         <div className="flex justify-center text-[1.4rem]">
           <button
             onClick={handleAddService}
-            className="bg-gray-500 rounded-[1rem] text-white font-bold text-center px-[1rem] py-[1rem] mb-[2rem]"
+            className="bg-gray-500 hover:bg-gray-800 hover:transition-all hover:duration-1000 rounded-[1rem] text-white font-bold text-center px-[1rem] py-[1rem] mb-[2rem]"
           >
             + Add New Service
           </button>
@@ -186,7 +186,7 @@ function Invoice() {
           </p>
 
           <button
-            className="bg-gray-500 hover:bg-black rounded-[1rem] text-white font-bold text-center py-[1rem]"
+            className="bg-gray-500 hover:bg-gray-800 hover:transition-all hover:duration-1000 rounded-[1rem] text-white font-bold text-center py-[1rem]"
             onClick={handleGenerate}
           >
             Generate Invoice
