@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import ContentEditable from "react-contenteditable";
 import { UserContext } from "../contexts/UserContext";
+import {
+  makeContractCall,
+  broadcastTransaction,
+  AnchorMode,
+  bufferCVFromString,
+} from "@stacks/transactions";
+
+import { StacksTestnet } from "@stacks/network";
 
 const date = new Date();
 
@@ -54,6 +62,26 @@ function Invoice() {
       return i !== index;
     });
     setServices(newServices);
+  };
+
+  const handleGenerate = async function () {
+    const transaction = await makeContractCall({
+      contractAddress: "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N.invoice",
+      contractName: "invoice",
+      functionName: "create-invoice",
+      functionArgs: [bufferCVFromString(recipient)],
+      senderKey: invoiceOwner.appPrivateKey,
+      validateWithAbi: true,
+      network: new StacksTestnet(),
+      anchorMode: AnchorMode.Any,
+    });
+
+    const broadcastResponse = await broadcastTransaction(transaction);
+
+    if (!broadcastResponse.success)
+      console.error("Transaction failed with error:", broadcastResponse.error);
+
+    console.log("Transaction successful with ID:", broadcastResponse.txid);
   };
 
   return (
@@ -157,7 +185,10 @@ function Invoice() {
             <span>$3, 250.00</span>
           </p>
 
-          <button className="bg-gray-500 rounded-[1rem] text-white font-bold text-center py-[1rem]">
+          <button
+            className="bg-gray-500 hover:bg-black rounded-[1rem] text-white font-bold text-center py-[1rem]"
+            onClick={handleGenerate}
+          >
             Generate Invoice
           </button>
         </div>
