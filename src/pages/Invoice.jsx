@@ -29,12 +29,17 @@ function Invoice() {
   );
 
   const [recipient, setRecipient] = useState("Enter recipient address here");
-  const [payment, setPayment] = useState("");
+  const [payment, setPayment] = useState(0);
   const { userProfile } = UserContext();
 
   useEffect(
     function () {
+      const total = services.reduce(
+        (acc, service) => acc + parseFloat(service.price),
+        0
+      );
       sessionStorage.setItem("services", JSON.stringify(services));
+      setPayment(total);
     },
     [services]
   );
@@ -182,7 +187,7 @@ function Invoice() {
         <div className="text-[1.8rem] flex flex-col gap-[2rem] justify-center translate-y-[1rem]">
           <p className="flex items-center justify-between">
             <span>Total Amount:</span>
-            <span>$3, 250.00</span>
+            <span>$ {payment}</span>
           </p>
 
           <button
