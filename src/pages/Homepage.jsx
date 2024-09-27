@@ -2,12 +2,10 @@ import { AppConfig, UserSession } from "@stacks/auth";
 import { showConnect } from "@stacks/connect";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import { useState } from "react";
 
 function Homepage() {
   const navigate = useNavigate("");
-  const [senderKey, setSenderKey] = useState("");
-  const { setUserProfile } = UserContext();
+  const { setUserProfile, setSenderKey } = UserContext();
   const appConfig = new AppConfig(["store_write", "publish_data"]);
   const userSession = new UserSession({ appConfig });
 
