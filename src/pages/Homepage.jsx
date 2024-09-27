@@ -2,9 +2,11 @@ import { AppConfig, UserSession } from "@stacks/auth";
 import { showConnect } from "@stacks/connect";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import { useState } from "react";
 
 function Homepage() {
   const navigate = useNavigate("");
+  const [senderKey, setSenderKey] = useState("");
   const { setUserProfile } = UserContext();
   const appConfig = new AppConfig(["store_write", "publish_data"]);
   const userSession = new UserSession({ appConfig });
@@ -21,6 +23,7 @@ function Homepage() {
       onFinish: function () {
         const userData = userSession.loadUserData();
         setUserProfile(userData);
+        setSenderKey(userData.appPrivateKey);
         sessionStorage.setItem("address", JSON.stringify(userData));
 
         navigate("/invoice");
