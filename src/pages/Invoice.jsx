@@ -5,11 +5,14 @@ import {
   makeContractCall,
   broadcastTransaction,
   AnchorMode,
-  standardPrincipalCV,
+  FungibleConditionCode,
+  makeStandardSTXPostCondition,
+  bufferCVFromString,
+  principalCV,
   uintCV,
-  validateStacksAddress,
+  createStacksPrivateKey,
+  makeRandomPrivKey,
 } from "@stacks/transactions";
-
 import { StacksTestnet } from "@stacks/network";
 
 const date = new Date();
@@ -73,69 +76,63 @@ function Invoice() {
     setServices(newServices);
   };
 
-  const handleGenerate = async function () {
+  async function handleGenerate() {
+    console.log("loading");
     try {
-      const address = "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N";
-      const isValid = validateStacksAddress(address);
+      // for mainnet, use `StacksMainnet()`
+      const network = new StacksTestnet();
+      const privateKeyHex = invoiceOwner.appPrivateKey;
+      const stacksPrivateKey = createStacksPrivateKey(privateKeyHex);
 
-      console.log(isValid);
+      console.log(stacksPrivateKey.data);
 
-      // Trim any extraneous whitespace
-      const trimmedRecipient = recipient.trim();
-      console.log("Trimmed recipient address:", trimmedRecipient);
+      // Add an optional post condition
+      // See below for details on constructing post conditions
+      const postConditionAddress = "SP2ZD731ANQZT6J4K3F5N8A40ZXWXC1XFXHVVQFKE";
+      const postConditionCode = FungibleConditionCode.GreaterEqual;
+      const postConditionAmount = 1000000n;
+      const postConditions = [
+        makeStandardSTXPostCondition(
+          postConditionAddress,
+          postConditionCode,
+          postConditionAmount
+        ),
+      ];
 
-      // Validate recipient address
-      if (!trimmedRecipient.startsWith("S")) {
-        throw new Error("Invalid recipient address: must start with 'S'");
-      }
-
-      const isValidRecipient = validateStacksAddress(trimmedRecipient);
-      if (!isValidRecipient) {
-        throw new Error(
-          "Invalid recipient address: Please provide a valid Stacks address."
-        );
-      }
-
-      // Validate contract address
-      const contractAddress = "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N";
-      const isValidContractAddress = validateStacksAddress(contractAddress);
-      if (!isValidContractAddress) {
-        throw new Error(
-          "Invalid contract address: Please provide a valid Stacks address."
-        );
-      }
-
-      const transaction = await makeContractCall({
-        contractAddress,
+      const txOptions = {
+        contractAddress: "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N",
         contractName: "invoice",
         functionName: "create-invoice",
-        functionArgs: [standardPrincipalCV(trimmedRecipient), uintCV(payment)],
-        senderKey: invoiceOwner.appPrivateKey, // Ensure this key is correct
+        functionArgs: [principalCV(recipient.trim()), uintCV(10)],
+        senderKey: stacksPrivateKey.data,
         validateWithAbi: true,
-        network: new StacksTestnet(),
+        network,
+        postConditions,
         anchorMode: AnchorMode.Any,
-      });
+      };
 
-      const broadcastResponse = await broadcastTransaction(transaction);
+      const transaction = await makeContractCall(txOptions);
+      console.log(transaction);
 
-      console.log("Broadcast response:", broadcastResponse); // Log the entire response for debugging
+      const broadcastResponse = await broadcastTransaction(
+        transaction,
+        network
+      );
 
-      if (broadcastResponse.success) {
-        console.log("Transaction successful with ID:", broadcastResponse.txid);
-      } else {
-        console.error(
-          "Transaction failed with error:",
-          broadcastResponse.error
-        );
-      }
+      console.log(broadcastResponse);
+      const txId = broadcastResponse.txid;
+      console.log(txId);
     } catch (error) {
-      console.error("Error generating transaction:", error);
+      console.error(error.message);
+      console.error(error.stack);
     }
-  };
+  }
 
   return (
     <section className="min-h-screen bg-black flex flex-col items-center justify-center gap-[3rem] py-[2rem]">
-      <h1 className="text-[3rem] text-white font-bold">Luna</h1>
+      <h1 className="text-[3rem] text-white font-bold">
+        <a href="/">Luna</a>
+      </h1>
       <figure className="bg-white px-[4rem] pt-[3rem] pb-[6rem] w-[60%] lg:w-[50%] xl:w-[40%] h-auto rounded-[1.5rem] flex flex-col gap-[2rem]">
         <div className="text-[2rem]">
           <h2 className="text-[2.75rem] font-semibold">{`INVOICE LN-${date

@@ -22,6 +22,8 @@ function Homepage() {
         setSenderKey(userData.appPrivateKey);
         sessionStorage.setItem("address", JSON.stringify(userData));
 
+        console.log(userSession);
+
         navigate("/invoice");
       },
 
