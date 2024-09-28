@@ -9,8 +9,6 @@ function Homepage() {
   const appConfig = new AppConfig(["store_write", "publish_data"]);
   const userSession = new UserSession({ appConfig });
 
-  console.log(userSession);
-
   function connectWallet() {
     showConnect({
       appDetails: {
