@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import ContentEditable from "react-contenteditable";
 import { UserContext } from "../contexts/UserContext";
+import { openContractCall } from "@stacks/connect";
 import {
-  makeContractCall,
-  broadcastTransaction,
   AnchorMode,
-  FungibleConditionCode,
-  makeStandardSTXPostCondition,
-  bufferCVFromString,
+  PostConditionMode,
   principalCV,
   uintCV,
-  createStacksPrivateKey,
-  makeRandomPrivKey,
 } from "@stacks/transactions";
 import { StacksTestnet } from "@stacks/network";
 
@@ -77,55 +72,31 @@ function Invoice() {
   };
 
   async function handleGenerate() {
-    console.log("loading");
-    try {
-      // for mainnet, use `StacksMainnet()`
-      const network = new StacksTestnet();
-      const privateKeyHex = invoiceOwner.appPrivateKey;
-      const stacksPrivateKey = createStacksPrivateKey(privateKeyHex);
+    openContractCall({
+      network: new StacksTestnet(),
+      anchorMode: AnchorMode.Any,
 
-      console.log(stacksPrivateKey.data);
-
-      // Add an optional post condition
-      // See below for details on constructing post conditions
-      const postConditionAddress = "SP2ZD731ANQZT6J4K3F5N8A40ZXWXC1XFXHVVQFKE";
-      const postConditionCode = FungibleConditionCode.GreaterEqual;
-      const postConditionAmount = 1000000n;
-      const postConditions = [
-        makeStandardSTXPostCondition(
-          postConditionAddress,
-          postConditionCode,
-          postConditionAmount
-        ),
-      ];
-
-      const txOptions = {
-        contractAddress: "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N",
-        contractName: "invoice",
-        functionName: "create-invoice",
-        functionArgs: [principalCV(recipient.trim()), uintCV(10)],
-        senderKey: stacksPrivateKey.data,
-        validateWithAbi: true,
-        network,
-        postConditions,
-        anchorMode: AnchorMode.Any,
-      };
-
-      const transaction = await makeContractCall(txOptions);
-      console.log(transaction);
-
-      const broadcastResponse = await broadcastTransaction(
-        transaction,
-        network
-      );
-
-      console.log(broadcastResponse);
-      const txId = broadcastResponse.txid;
-      console.log(txId);
-    } catch (error) {
-      console.error(error.message);
-      console.error(error.stack);
-    }
+      contractAddress: "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N",
+      contractName: "invoice",
+      functionName: "create-invoice",
+      functionArgs: [principalCV(recipient), uintCV(payment)],
+      postConditionMode: PostConditionMode.Deny,
+      appDetails: {
+        name: "Luna",
+        icon: "Luna",
+      },
+      onFinish: async (data) => {
+        try {
+          const res = await fetch(
+            `https://stacks-node-api.testnet.stacks.co/extended/v1/tx/${data.txId}`
+          );
+          const value = await res.json();
+          console.log(value);
+        } catch (error) {
+          console.error(error.message);
+        }
+      },
+    });
   }
 
   return (
