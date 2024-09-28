@@ -20,6 +20,9 @@ importers:
       '@stacks/transactions':
         specifier: ^6.16.1
         version: 6.16.1
+      c32check:
+        specifier: ^2.0.0
+        version: 2.0.0
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1

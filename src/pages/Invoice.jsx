@@ -5,7 +5,9 @@ import {
   makeContractCall,
   broadcastTransaction,
   AnchorMode,
-  bufferCVFromString,
+  standardPrincipalCV,
+  uintCV,
+  validateStacksAddress,
 } from "@stacks/transactions";
 
 import { StacksTestnet } from "@stacks/network";
@@ -46,7 +48,9 @@ function Invoice() {
 
   // Handle recipient input
   const handleRecipientChange = function (e) {
-    setRecipient(e.target.value);
+    const htmlContent = e.target.value;
+    const address = htmlContent.replace(/<\/?[^>]+(>|$)/g, ""); // Remove HTML tags
+    setRecipient(address);
   };
 
   // Handle service input
@@ -70,23 +74,63 @@ function Invoice() {
   };
 
   const handleGenerate = async function () {
-    const transaction = await makeContractCall({
-      contractAddress: "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N.invoice",
-      contractName: "invoice",
-      functionName: "create-invoice",
-      functionArgs: [bufferCVFromString(recipient)],
-      senderKey: invoiceOwner.appPrivateKey,
-      validateWithAbi: true,
-      network: new StacksTestnet(),
-      anchorMode: AnchorMode.Any,
-    });
+    try {
+      const address = "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N";
+      const isValid = validateStacksAddress(address);
 
-    const broadcastResponse = await broadcastTransaction(transaction);
+      console.log(isValid);
 
-    if (!broadcastResponse.success)
-      console.error("Transaction failed with error:", broadcastResponse.error);
+      // Trim any extraneous whitespace
+      const trimmedRecipient = recipient.trim();
+      console.log("Trimmed recipient address:", trimmedRecipient);
 
-    console.log("Transaction successful with ID:", broadcastResponse.txid);
+      // Validate recipient address
+      if (!trimmedRecipient.startsWith("S")) {
+        throw new Error("Invalid recipient address: must start with 'S'");
+      }
+
+      const isValidRecipient = validateStacksAddress(trimmedRecipient);
+      if (!isValidRecipient) {
+        throw new Error(
+          "Invalid recipient address: Please provide a valid Stacks address."
+        );
+      }
+
+      // Validate contract address
+      const contractAddress = "STR8DEM3FN6PV9XV85KGB7DQHEMDJ9TCM0J7R02N";
+      const isValidContractAddress = validateStacksAddress(contractAddress);
+      if (!isValidContractAddress) {
+        throw new Error(
+          "Invalid contract address: Please provide a valid Stacks address."
+        );
+      }
+
+      const transaction = await makeContractCall({
+        contractAddress,
+        contractName: "invoice",
+        functionName: "create-invoice",
+        functionArgs: [standardPrincipalCV(trimmedRecipient), uintCV(payment)],
+        senderKey: invoiceOwner.appPrivateKey, // Ensure this key is correct
+        validateWithAbi: true,
+        network: new StacksTestnet(),
+        anchorMode: AnchorMode.Any,
+      });
+
+      const broadcastResponse = await broadcastTransaction(transaction);
+
+      console.log("Broadcast response:", broadcastResponse); // Log the entire response for debugging
+
+      if (broadcastResponse.success) {
+        console.log("Transaction successful with ID:", broadcastResponse.txid);
+      } else {
+        console.error(
+          "Transaction failed with error:",
+          broadcastResponse.error
+        );
+      }
+    } catch (error) {
+      console.error("Error generating transaction:", error);
+    }
   };
 
   return (
@@ -115,8 +159,8 @@ function Invoice() {
             <span>From: </span>
             <span>
               {userProfile.length > 0
-                ? userProfile.profile.stxAddress.mainnet.slice(0, 25) + "....."
-                : invoiceOwner.profile.stxAddress.mainnet.slice(0, 25) +
+                ? userProfile.profile.stxAddress.testnet.slice(0, 25) + "....."
+                : invoiceOwner.profile.stxAddress.testnet.slice(0, 25) +
                   "....."}
             </span>
           </p>
