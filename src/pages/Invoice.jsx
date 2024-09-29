@@ -31,7 +31,7 @@ function Invoice() {
 
   const [recipient, setRecipient] = useState("Enter recipient address here");
   const [payment, setPayment] = useState(0);
-  const { setTxId, txData } = useTracker();
+  const { setTxId, txData, setTxData } = useTracker();
   const [showNotification, setShowNotification] = useState(false);
   const { userProfile } = UserContext();
 
@@ -50,15 +50,14 @@ function Invoice() {
   useEffect(
     function () {
       if (txData.tx_status === "success") {
-        console.log(true);
         setShowNotification(true);
+        setTxData({});
 
         const timer = setTimeout(() => setShowNotification(false), 8000);
-
         return () => clearTimeout(timer);
       }
     },
-    [txData.tx_status]
+    [txData?.tx_status]
   );
 
   // Handle recipient input

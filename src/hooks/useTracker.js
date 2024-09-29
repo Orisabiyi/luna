@@ -28,5 +28,5 @@ export default function useTracker() {
     [txData]
   );
 
-  return { txData, error, setTxId };
+  return { txData, setTxData, error, setTxId };
 }
