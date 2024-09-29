@@ -32,6 +32,7 @@ function Invoice() {
   const [recipient, setRecipient] = useState("Enter recipient address here");
   const [payment, setPayment] = useState(0);
   const { setTxId, txData } = useTracker();
+  const [showNotification, setShowNotification] = useState(false);
   const { userProfile } = UserContext();
 
   useEffect(
@@ -42,10 +43,22 @@ function Invoice() {
       );
       sessionStorage.setItem("services", JSON.stringify(services));
       setPayment(total);
-
-      console.log(txData);
     },
     [services]
+  );
+
+  useEffect(
+    function () {
+      if (txData.tx_status === "success") {
+        console.log(true);
+        setShowNotification(true);
+
+        const timer = setTimeout(() => setShowNotification(false), 8000);
+
+        return () => clearTimeout(timer);
+      }
+    },
+    [txData.tx_status]
   );
 
   // Handle recipient input
@@ -96,7 +109,17 @@ function Invoice() {
   }
 
   return (
-    <section className="min-h-screen bg-black flex flex-col items-center justify-center gap-[3rem] py-[2rem]">
+    <section className="min-h-screen bg-black flex flex-col items-center justify-center gap-[3rem] py-[2rem] relative">
+      {showNotification && (
+        <div
+          className={`text-[1.3rem] leading-tight bg-gray-400 fixed top-[3rem] p-[1rem] rounded-[.3rem] w-[15rem] transition-all duration-700 ${
+            showNotification ? "right-[3rem]" : "right-[-10rem]"
+          }`}
+        >
+          You have successfully created and invoice
+        </div>
+      )}
+
       <h1 className="text-[3rem] text-white font-bold">
         <a href="/">Luna</a>
       </h1>
@@ -206,6 +229,8 @@ function Invoice() {
           </button>
         </div>
       </figure>
+
+      {/* {data.tx_status === "success"} */}
     </section>
   );
 }
