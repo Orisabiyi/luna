@@ -13,7 +13,7 @@ export default function useTracker() {
           `https://stacks-node-api.testnet.stacks.co/extended/v1/tx/${txId}`
         );
         const value = await res.json();
-        setTxData(value);
+        setTxData(value.result);
       } catch (error) {
         setError(error.message);
       }
@@ -25,5 +25,5 @@ export default function useTracker() {
     return () => clearInterval(interval); // cleaningup
   }, []);
 
-  return { txData, setTxData, error, setError, setTxId };
+  return { txData, error, setTxId };
 }
