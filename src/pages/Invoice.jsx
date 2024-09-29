@@ -9,6 +9,7 @@ import {
   uintCV,
 } from "@stacks/transactions";
 import { StacksTestnet } from "@stacks/network";
+import useTracker from "../hooks/useTracker";
 
 const date = new Date();
 
@@ -30,6 +31,7 @@ function Invoice() {
 
   const [recipient, setRecipient] = useState("Enter recipient address here");
   const [payment, setPayment] = useState(0);
+  const { setTxId } = useTracker();
   const { userProfile } = UserContext();
 
   useEffect(
