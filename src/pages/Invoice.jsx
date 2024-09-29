@@ -31,7 +31,7 @@ function Invoice() {
 
   const [recipient, setRecipient] = useState("Enter recipient address here");
   const [payment, setPayment] = useState(0);
-  const { setTxId } = useTracker();
+  const { setTxId, txData } = useTracker();
   const { userProfile } = UserContext();
 
   useEffect(
@@ -42,6 +42,8 @@ function Invoice() {
       );
       sessionStorage.setItem("services", JSON.stringify(services));
       setPayment(total);
+
+      console.log(txData);
     },
     [services]
   );
@@ -88,15 +90,7 @@ function Invoice() {
         icon: "Luna",
       },
       onFinish: async (data) => {
-        try {
-          const res = await fetch(
-            `https://stacks-node-api.testnet.stacks.co/extended/v1/tx/${data.txId}`
-          );
-          const value = await res.json();
-          console.log(value);
-        } catch (error) {
-          console.error(error.message);
-        }
+        data && setTxId(data.txId);
       },
     });
   }
