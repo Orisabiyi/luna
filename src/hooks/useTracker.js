@@ -9,14 +9,18 @@ export default function useTracker() {
   useEffect(
     function () {
       async function checkTransaction() {
+        if (!txId) throw new Error("Transaction didn't go through");
+
         try {
           const res = await fetch(
             `https://stacks-node-api.testnet.stacks.co/extended/v1/tx/${txId}`
           );
           const value = await res.json();
           setTxData(value.results[0]);
+          setError("");
         } catch (error) {
           setError(error.message);
+          setTxData({});
         }
       }
 
@@ -25,7 +29,7 @@ export default function useTracker() {
 
       return () => clearInterval(interval); // cleaning up
     },
-    [txData]
+    [txId]
   );
 
   return { txData, setTxData, error, setTxId };
