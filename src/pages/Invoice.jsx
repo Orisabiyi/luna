@@ -10,6 +10,7 @@ import {
 } from "@stacks/transactions";
 import { StacksTestnet } from "@stacks/network";
 import useTracker from "../hooks/useTracker";
+import { BeatLoader } from "react-spinners";
 
 const date = new Date();
 
@@ -31,8 +32,9 @@ function Invoice() {
 
   const [recipient, setRecipient] = useState("Enter recipient address here");
   const [payment, setPayment] = useState(0);
-  const { setTxId, txData, setTxData } = useTracker();
+  const { setTxId, txData, setTxData, txId } = useTracker();
   const [showNotification, setShowNotification] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { userProfile } = UserContext();
 
   useEffect(
@@ -49,15 +51,25 @@ function Invoice() {
 
   useEffect(
     function () {
-      if (txData.tx_status === "success") {
-        setShowNotification(true);
-        setTxData({});
+      if (txData.tx_status === "pending") {
+        console.log(txId);
+        setIsLoading(true);
+        const timer = setInterval(() => setTxId(txId), 5000);
+        return () => clearInterval(timer);
+      }
 
-        const timer = setTimeout(() => setShowNotification(false), 8000);
+      if (txData.tx_status === "success") {
+        setIsLoading(false);
+        setShowNotification(true);
+
+        const timer = setTimeout(function () {
+          setShowNotification(false);
+          setTxData({});
+        }, 8000);
         return () => clearTimeout(timer);
       }
     },
-    [txData?.tx_status]
+    [txData.tx_status]
   );
 
   // Handle recipient input
@@ -102,6 +114,7 @@ function Invoice() {
         icon: "Luna",
       },
       onFinish: async (data) => {
+        console.log(data.txId);
         data && setTxId(data.txId);
       },
     });
@@ -201,19 +214,6 @@ function Invoice() {
           </button>
         </div>
 
-        {/* <div className="flex justify-between items-center text-[1.8rem]">
-          <label>Payment Type</label>
-          <select
-            id=""
-            className="outline-none"
-            onChange={(e) => setPayment(e.target.value)}
-          >
-            <option value="crowdfunding">CrowdFunding</option>
-            <option value="single payment">Single Payment</option>
-            <option value="group payment">Group Payment</option>
-          </select>
-        </div> */}
-
         <div className="text-[1.8rem] flex flex-col gap-[2rem] justify-center translate-y-[1rem]">
           <p className="flex items-center justify-between">
             <span>Total Amount:</span>
@@ -229,7 +229,15 @@ function Invoice() {
         </div>
       </figure>
 
-      {/* {data.tx_status === "success"} */}
+      {isLoading && (
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-[2rem] bg-black bg-opacity-80 backdrop-blur">
+          <BeatLoader color="#fff" />
+
+          <p className="text-white text-[1.4rem]">
+            Please wait your invoice is been generated
+          </p>
+        </div>
+      )}
     </section>
   );
 }
