@@ -7,11 +7,15 @@ const createUserContext = createContext();
 
 export function UserContextProvider({ children }) {
   const [userProfile, setUserProfile] = useState({});
+  const [senderKey, setSenderKey] = useState("");
+
   return (
     <createUserContext.Provider
       value={{
         userProfile,
         setUserProfile,
+        senderKey,
+        setSenderKey,
       }}
     >
       {children}
