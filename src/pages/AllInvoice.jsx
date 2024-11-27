@@ -1,10 +1,13 @@
 import { FaFileInvoiceDollar } from "react-icons/fa";
+import Navbar from "../components/Navbar";
 
 export default function AllInvoice() {
   return (
     <main className="h-screen bg-black">
-      <section className="flex items-center justify-center">
-        <FaFileInvoiceDollar color="white" size={50} />
+      <Navbar />
+
+      <section className="flex items-center justify-center h-full">
+        <FaFileInvoiceDollar color="white" size={100} />
       </section>
     </main>
   );
