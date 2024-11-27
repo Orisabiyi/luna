@@ -9,6 +9,7 @@ export default function AllInvoice() {
 
       <section className="flex flex-col items-center justify-center gap-8 flex-1 text-white text-3xl">
         <FaFileInvoiceDollar color="white" size={100} />
+
         <p>You currently have no invoice</p>
         <InvoiceButton />
       </section>
