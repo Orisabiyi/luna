@@ -5,11 +5,9 @@ import { UserContext } from "../contexts/UserContext";
 
 function Homepage() {
   const navigate = useNavigate("");
-  const { setUserProfile } = UserContext();
+  const { setUserProfile, setSenderKey } = UserContext();
   const appConfig = new AppConfig(["store_write", "publish_data"]);
   const userSession = new UserSession({ appConfig });
-
-  console.log(userSession);
 
   function connectWallet() {
     showConnect({
@@ -21,7 +19,10 @@ function Homepage() {
       onFinish: function () {
         const userData = userSession.loadUserData();
         setUserProfile(userData);
+        setSenderKey(userData.appPrivateKey);
         sessionStorage.setItem("address", JSON.stringify(userData));
+
+        console.log(userSession);
 
         navigate("/invoice");
       },
