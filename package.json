@@ -15,6 +15,7 @@
     "@stacks/network": "^6.16.0",
     "@stacks/transactions": "^6.16.1",
     "c32check": "^2.0.0",
+    "firebase": "11.0.2",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-contenteditable": "^3.3.7",

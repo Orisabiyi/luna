@@ -12,8 +12,18 @@ export default function Invoice() {
           </label>
           <input
             type="text"
-            className="w-full p-5 outline-none rounded-lg text-3xl"
+            className="w-full p-5 outline-none rounded-lg text-3xl mb-8"
             id="invoice-title"
+            required
+          />
+
+          <label htmlFor="recipient" className="text-white">
+            Recipient Wallet Address
+          </label>
+          <input
+            type="text"
+            id="recipient"
+            className="w-full p-5 outline-none rounded-lg text-3xl"
           />
         </form>
 
