@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import Invoice from "./pages/Invoice";
 import { UserContextProvider } from "./contexts/UserContext";
+import AllInvoice from "./pages/AllInvoice";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Homepage />} />
+          <Route path="/all-invoice" element={<AllInvoice />} />
           <Route path="/invoice" element={<Invoice />} />
         </Routes>
       </BrowserRouter>
